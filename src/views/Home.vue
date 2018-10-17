@@ -14,7 +14,7 @@
 
     <div v-for="person in people">
       <h2 @click="toggleBio(person)">{{ person.name }}</h2>
-      <div v-bind:class="{strike: person.bioVisible, pumpkin: true}">
+      <div v-if="person.bioVisible">
         <h3>{{ person.bio }}</h3>
         <button @click="deletePerson(person)">Delete</button>
       </div>
@@ -29,35 +29,25 @@
 </style>
 
 <script>
+var axios = require('axios');
+
 export default {
   data: function() {
     return {
-      people: [
-        {
-          name: "Bob",
-          bio: "Small batch salvia Marfa chillwave delectus, odio forage art party laborum street art minim fixie locavore hoodie mollit.",
-          bioVisible: true
-        },
-        {
-          name: "Alice",
-          bio: "Tattooed letterpress gluten-free ugh, adipisicing scenester church-key gentrify tousled gastropub pour-over Shoreditch asymmetrical lomo High Life.",
-          bioVisible: true
-        },
-        {
-          name: "Tibor",
-          bio: "Incididunt photo booth ethical reprehenderit adipisicing. Echo Park readymade Bushwick distillery Tonx. +1 semiotics qui duis literally.",
-          bioVisible: true
-        },
-        {
-          name: "Živa",
-          bio: "Excepteur shabby chic semiotics Marfa, quinoa try-hard polaroid pariatur banh mi selfies incididunt brunch trust fund. Ethical dolor PBR&B Tumblr.",
-          bioVisible: true
-        }
-      ],
+      people: [],
       newPerson: {name: "", bio: "", bioVisible: true}
     };
   },
-  created: function() {},
+  created: function() {
+    // console.log(this);
+
+    axios
+    .get("http://localhost:3000/api/people")
+    .then(function(response) {
+      this.people = response.data;
+      // console.log(this);
+    }.bind(this));
+  },
   methods: {
     toggleBio: function(inputPerson) {
       inputPerson.bioVisible = !inputPerson.bioVisible;
