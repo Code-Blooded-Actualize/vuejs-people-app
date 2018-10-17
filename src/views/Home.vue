@@ -14,13 +14,18 @@
 
     <div v-for="person in people">
       <h2 @click="toggleBio(person)">{{ person.name }}</h2>
-      <h3 v-if="person.bioVisible">{{ person.bio }}</h3>
-      <button @click="deletePerson(person)">Delete</button>
+      <div v-bind:class="{strike: person.bioVisible, pumpkin: true}">
+        <h3>{{ person.bio }}</h3>
+        <button @click="deletePerson(person)">Delete</button>
+      </div>
     </div>
   </div>
 </template>
 
 <style>
+.strike {
+  text-decoration: line-through;
+}
 </style>
 
 <script>
