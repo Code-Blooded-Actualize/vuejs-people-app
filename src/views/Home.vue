@@ -35,28 +35,37 @@ export default {
   data: function() {
     return {
       people: [],
-      newPerson: {name: "", bio: "", bioVisible: true}
+      newPerson: {name: "", bio: "", bioVisible: false}
     };
   },
-  created: function() {
-    // console.log(this);
 
+  
+  created: function() {
     axios
     .get("http://localhost:3000/api/people")
     .then(function(response) {
       this.people = response.data;
-      // console.log(this);
     }.bind(this));
   },
+
+
   methods: {
     toggleBio: function(inputPerson) {
       inputPerson.bioVisible = !inputPerson.bioVisible;
     },
     addPerson: function() {
-      if (this.newPerson.name && this.newPerson.bio) {
-        this.people.push(this.newPerson);
-        this.newPerson = {name: "", bio: "", bioVisible: true};
-      }
+      var params = {
+                    name: this.newPerson.name,
+                    bio: this.newPerson.bio
+                    };
+
+      axios
+      .post("http://localhost:3000/api/people", params)
+      .then(function(response) {
+        this.people.push(response.data);
+      }.bind(this));
+
+      this.newPerson = {name: "", bio: "", bioVisible: false};
     },
     deletePerson: function(inputPerson) {
       var index = this.people.indexOf(inputPerson);
