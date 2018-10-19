@@ -1,7 +1,9 @@
 <template>
   <div class="home">
     <h1>Interesting People</h1>
-
+    <ul>
+      <li v-for="error in errors">{{ error }}</li>
+    </ul>
     <div>
       Name: <input v-model="newPerson.name">  
       Bio: <input v-model="newPerson.bio">
@@ -35,25 +37,23 @@ export default {
   data: function() {
     return {
       people: [],
-      newPerson: {name: "", bio: "", bioVisible: false}
+      newPerson: {name: "", bio: "", bioVisible: false},
+      errors: []
     };
   },
-
-  
   created: function() {
     axios
     .get("http://localhost:3000/api/people")
-    .then(function(response) {
+    .then(reponse => {
       this.people = response.data;
-    }.bind(this));
+    });
   },
-
-
   methods: {
     toggleBio: function(inputPerson) {
       inputPerson.bioVisible = !inputPerson.bioVisible;
     },
     addPerson: function() {
+      this.errors = [];
       var params = {
                     name: this.newPerson.name,
                     bio: this.newPerson.bio
@@ -61,11 +61,13 @@ export default {
 
       axios
       .post("http://localhost:3000/api/people", params)
-      .then(function(response) {
+      .then(response => {
         this.people.push(response.data);
-      }.bind(this));
-
-      this.newPerson = {name: "", bio: "", bioVisible: false};
+        this.newPerson = {name: "", bio: "", bioVisible: false};
+      })
+      .catch(error => {
+        this.errors = error.response.data.errors;
+      });
     },
     deletePerson: function(inputPerson) {
       var index = this.people.indexOf(inputPerson);
