@@ -14,7 +14,11 @@
       <h4>Total Number of People: {{ people.length }}</h4>
     </div>
 
-    <div v-for="person in people">
+    <div>
+      <input v-model="nameFilter">
+    </div>
+
+    <div v-for="person in filterBy(people, nameFilter, 'name', 'bio')">
       <h2 @click="toggleBio(person)">{{ person.name }}</h2>
       <div v-if="person.bioVisible">
         <h3>{{ person.bio }}</h3>
@@ -38,13 +42,14 @@ export default {
     return {
       people: [],
       newPerson: {name: "", bio: "", bioVisible: false},
-      errors: []
+      errors: [],
+      nameFilter: ""
     };
   },
   created: function() {
     axios
     .get("http://localhost:3000/api/people")
-    .then(reponse => {
+    .then(response => {
       this.people = response.data;
     });
   },
