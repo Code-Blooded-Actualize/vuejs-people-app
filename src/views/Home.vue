@@ -21,7 +21,12 @@
       </datalist>
     </div>
 
-    <div v-for="person in filterBy(people, nameFilter, 'name', 'bio')">
+    <div>
+      <button @click="setSortAttribute('name')">Sort by Name</button>
+      <button @click="setSortAttribute('bio')">Sort by Bio</button>
+    </div>
+
+    <div v-for="person in orderBy(filterBy(people, nameFilter, 'name'), sortAttribute, sortOrder)">
       <h2 @click="toggleBio(person)">{{ person.name }}</h2>
       <div v-if="person.bioVisible">
         <h3>{{ person.bio }}</h3>
@@ -46,7 +51,9 @@ export default {
       people: [],
       newPerson: {name: "", bio: "", bioVisible: false},
       errors: [],
-      nameFilter: ""
+      nameFilter: "",
+      sortAttribute: 'name',
+      sortOrder: 1
     };
   },
   created: function() {
@@ -80,6 +87,15 @@ export default {
     deletePerson: function(inputPerson) {
       var index = this.people.indexOf(inputPerson);
       this.people.splice(index, 1);
+    },
+    setSortAttribute: function(inputAttribute) {
+      if (this.sortAttribute === inputAttribute) {
+        this.sortOrder = this.sortOrder * -1;
+      } else {
+        this.sortOrder = 1;
+      }
+
+      this.sortAttribute = inputAttribute;
     }
   },
   computed: {}
