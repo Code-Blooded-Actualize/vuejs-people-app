@@ -15,7 +15,10 @@
     </div>
 
     <div>
-      <input v-model="nameFilter">
+      Search: <input v-model="nameFilter" list="names">
+      <datalist id="names">
+        <option v-for="person in people">{{ person.name }}</option>
+      </datalist>
     </div>
 
     <div v-for="person in filterBy(people, nameFilter, 'name', 'bio')">
